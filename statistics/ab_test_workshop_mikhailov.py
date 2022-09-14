@@ -124,6 +124,7 @@ my_data = pd.DataFrame({'Group': ['old order form (A)', 'new order form (B)'], '
 my_data['CR'] = my_data['Orders'] / my_data['Users']
 my_data.loc['Total'] = my_data.sum()
 my_data['CR'] = my_data['Orders'] / my_data['Users']
+print(my_data)
 control_sample_mean = np.random.binomial(1, my_data.iat[2, 3], my_data.iat[0, 1]).mean()
 treatment_sample_mean = np.random.binomial(1, my_data.iat[2, 3], my_data.iat[1, 1]).mean()
 ab_mean_diff = abs(my_data.iat[0, 3] - my_data.iat[1, 3])
@@ -200,3 +201,16 @@ print(sms.NormalIndPower().solve_power(es, power=0.80, alpha=0.05, ratio=1))
 
 # 6. Alpha и мощность позволяют учесть вероятность ошибок первого и второго рода, учесть их в модели,
 # рассчитать необходимое количество наблюдений в выборке.
+
+# 7. Бонус. Сравнение получаемых гистограмм для нормального и биномиального распределения
+for _ in range(10):
+    result = []
+    for _ in range(1000):
+        a = np.random.binomial(1, 0.008176, size=43664).mean()
+        result.append(a)
+    result_std = np.std(result)
+
+    b = np.random.normal(0.008176, result_std, 1000).tolist()
+    sns.kdeplot(result)
+    sns.kdeplot(b)
+    plt.show()
