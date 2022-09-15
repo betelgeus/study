@@ -105,6 +105,7 @@ p_value = np.mean([sample_generator() >= ab_mean_diff for _ in range(10000)])
 print('p_value:', p_value)
 
 # Проверяем результат с помощью Z-теста. Подаем на вход два массива: 1 с кол-вом продаж, второй с размерами выборок
+# proportions_ztest(group A count of orders, group B count of orders, group A users, group B users)
 p_value_z = proportions_ztest([data.iat[0, 2], data.iat[1, 2]], [data.iat[0, 1], data.iat[1, 1]])
 print('p_value_1:', p_value_z[1])
 
@@ -115,7 +116,7 @@ data_array = [[data.iat[0, 2], data.iat[0, 1] - data.iat[0, 2]], [data.iat[1, 2]
 # chi2, p_value_chi2, dof, ex = chi2_contingency(data_array, correction=False)
 p_value_chi2 = chi2_contingency(data_array, correction=False)
 print('p_value_chi2:', p_value_chi2[1])
-# Вывод: вероятность менее 1% (0.7%), отвергаем H0, делаем вывод, что разница в конверсии стат. значимая.
+# Вывод: вероятность менее 1% (0.7%), отвергаем H0, делаем вывод, что разница в конверсии статистически значимая.
 
 
 # 3. Делаем аналогичный тест, но уже со своими данными
@@ -138,9 +139,13 @@ def sample_generator():
 
 p_value = np.mean([sample_generator() >= ab_mean_diff for _ in range(10000)])
 print('p_value:', p_value)
+# proportions_ztest(group A count of orders, group B count of orders, group A users, group B users)
 p_value_z = proportions_ztest([my_data.iat[0, 2], my_data.iat[1, 2]], [my_data.iat[0, 1], my_data.iat[1, 1]])
 print('p_value_1:', p_value_z[1])
-data_array = [[my_data.iat[0, 2], my_data.iat[0, 1] - my_data.iat[0, 2]], [my_data.iat[1, 2], my_data.iat[1, 1] - my_data.iat[1, 2]]]
+# data_array group A count of orders, group A users without orders, group B count of orders,
+# group B users without orders
+data_array = [[my_data.iat[0, 2], my_data.iat[0, 1] - my_data.iat[0, 2]], [my_data.iat[1, 2], my_data.iat[1, 1]
+                                                                           - my_data.iat[1, 2]]]
 p_value_chi2 = chi2_contingency(data_array, correction=False)
 print('p_value_chi2:', p_value_chi2[1])
 # Вывод: вероятность более 7% (7.69%), подтверждаем H0, делаем вывод, что разница в конверсии не статистически значимая.
@@ -196,7 +201,7 @@ plt.show()
 # effectsize(0.10, 0.15) это ожидаемый эффект. 0.10 текущая конверсия, 0.15 планируемая конверсия
 es = sms.proportion_effectsize(0.10, 0.15)
 # ratio соотношение выборок
-print(sms.NormalIndPower().solve_power(es, power=0.80, alpha=0.05, ratio=1))
+print('Размер выборки:', sms.NormalIndPower().solve_power(es, power=0.80, alpha=0.05, ratio=1))
 # Калькулятор размера выборки: https://www.evanmiller.org/ab-testing/sample-size.html
 
 # 6. Alpha и мощность позволяют учесть вероятность ошибок первого и второго рода, учесть их в модели,
