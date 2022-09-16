@@ -24,7 +24,7 @@ from scipy.stats import ttest_ind
 pop_prop = 0.0069
 # alpha — пороговый уровень статистической значимости
 a = 1.96
-# mde — изменение в конверсии, которое мы хотим обнаружить
+# mde — изменение в конверсии (absolute), которое мы хотим обнаружить
 mde = 0.0005
 N = pop_prop * (1 - pop_prop) * (a / mde) ** 2
 print('count of observation:', round(N))
