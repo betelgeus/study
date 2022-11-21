@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 def event_aggregation(events, submissions):
@@ -9,4 +10,3 @@ def event_aggregation(events, submissions):
 def data_preparation(events, submissions):
     user_events = event_aggregation(events, submissions)
     return user_events
-
