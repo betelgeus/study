@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import data_preparation as pr
-pd.options.mode.chained_assignment = None
 import config as conf
 from math import ceil
+pd.options.mode.chained_assignment = None
 
 
 def rename_columns(users_metrics_n_days):
@@ -31,13 +31,37 @@ def users_metrics_by_days(events, users_metrics_n_days):
 
 
 def day_metrics_ratio(users_metrics_n_days):
-    users_metrics_n_days['d_ratio'] = (users_metrics_n_days.d_1 / users_metrics_n_days.d_2).fillna(0)
-    users_metrics_n_days['v_ratio'] = (users_metrics_n_days.v_1 / users_metrics_n_days.v_2).fillna(0)
-    users_metrics_n_days['s_ratio'] = (users_metrics_n_days.s_1 / users_metrics_n_days.s_2).fillna(0)
-    users_metrics_n_days['w_ratio'] = (users_metrics_n_days.w_1 / users_metrics_n_days.w_2).fillna(0)
-    users_metrics_n_days['p_ratio'] = (users_metrics_n_days.p_1 / users_metrics_n_days.p_2).fillna(0)
-    users_metrics_n_days['c_ratio'] = (users_metrics_n_days.c_1 / users_metrics_n_days.c_2).fillna(0)
-    users_metrics_n_days.replace([np.inf, -np.inf], 0, inplace=True)
+    users_metrics_n_days['d_ratio'] = (users_metrics_n_days.d_1 / users_metrics_n_days.d_2).fillna(-1)
+    users_metrics_n_days['v_ratio'] = (users_metrics_n_days.v_1 / users_metrics_n_days.v_2).fillna(-1)
+    users_metrics_n_days['s_ratio'] = (users_metrics_n_days.s_1 / users_metrics_n_days.s_2).fillna(-1)
+    users_metrics_n_days['w_ratio'] = (users_metrics_n_days.w_1 / users_metrics_n_days.w_2).fillna(-1)
+    users_metrics_n_days['p_ratio'] = (users_metrics_n_days.p_1 / users_metrics_n_days.p_2).fillna(-1)
+    users_metrics_n_days['c_ratio'] = (users_metrics_n_days.c_1 / users_metrics_n_days.c_2).fillna(-1)
+    users_metrics_n_days.replace([np.inf, -np.inf], -1, inplace=True)
+    return users_metrics_n_days
+
+
+def agg_events(users_metrics_n_days):
+    users_metrics_n_days['agg'] = users_metrics_n_days.discovered + users_metrics_n_days.viewed +\
+                                  users_metrics_n_days.started_attempt + users_metrics_n_days.wrong + \
+                                  users_metrics_n_days.passed + users_metrics_n_days.correct + \
+                                  users_metrics_n_days.course_complete + users_metrics_n_days.d_1 + \
+                                  users_metrics_n_days.d_2 + users_metrics_n_days.v_1 + users_metrics_n_days.v_2 + \
+                                  users_metrics_n_days.s_1 + users_metrics_n_days.s_2 + users_metrics_n_days.w_1 + \
+                                  users_metrics_n_days.w_2 + users_metrics_n_days.p_1 + users_metrics_n_days.p_2 + \
+                                  users_metrics_n_days.c_1 + users_metrics_n_days.c_2
+    return users_metrics_n_days
+
+
+def correct_wrong_ratio(users_metrics_n_days):
+    users_metrics_n_days['cw_ratio'] = (users_metrics_n_days.correct / users_metrics_n_days.wrong).fillna(0)
+    users_metrics_n_days.replace([np.inf, -np.inf], -1, inplace=True)
+    return users_metrics_n_days
+
+
+def start_passed_ratio(users_metrics_n_days):
+    users_metrics_n_days['sp_ratio'] = (users_metrics_n_days.started_attempt / users_metrics_n_days.passed).fillna(0)
+    users_metrics_n_days.replace([np.inf, -np.inf], -1, inplace=True)
     return users_metrics_n_days
 
 
@@ -50,4 +74,7 @@ def features_generator(events, submissions):
     events, users_metrics_n_days = pr.metrics_n_days(users_events, users_course_complete, conf.DAY_THRESHOLD)
     users_metrics_n_days = users_metrics_by_days(events, users_metrics_n_days)
     users_metrics_n_days = day_metrics_ratio(users_metrics_n_days)
+    users_metrics_n_days = agg_events(users_metrics_n_days)
+    users_metrics_n_days = correct_wrong_ratio(users_metrics_n_days)
+    users_metrics_n_days = start_passed_ratio(users_metrics_n_days)
     return users_metrics_n_days
