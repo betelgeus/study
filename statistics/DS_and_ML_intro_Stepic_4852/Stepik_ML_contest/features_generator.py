@@ -73,8 +73,8 @@ def features_generator(events, submissions):
     users_course_complete = pr.course_complete(users_events, conf.ESTIMATION_PARAM, conf.ESTIMATION_VALUE)
     events, users_metrics_n_days = pr.metrics_n_days(users_events, users_course_complete, conf.DAY_THRESHOLD)
     users_metrics_n_days = users_metrics_by_days(events, users_metrics_n_days)
-    users_metrics_n_days = day_metrics_ratio(users_metrics_n_days)
-    users_metrics_n_days = agg_events(users_metrics_n_days)
-    users_metrics_n_days = correct_wrong_ratio(users_metrics_n_days)
-    users_metrics_n_days = start_passed_ratio(users_metrics_n_days)
+    # users_metrics_n_days = day_metrics_ratio(users_metrics_n_days)
+    # users_metrics_n_days = agg_events(users_metrics_n_days)
+    # users_metrics_n_days = correct_wrong_ratio(users_metrics_n_days)
+    # users_metrics_n_days = start_passed_ratio(users_metrics_n_days)
     return users_metrics_n_days
