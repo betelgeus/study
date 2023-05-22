@@ -2,7 +2,6 @@ import pymysql
 import paramiko
 import pandas as pd
 import config
-from paramiko import SSHClient
 from sshtunnel import SSHTunnelForwarder
 from os.path import expanduser
 
